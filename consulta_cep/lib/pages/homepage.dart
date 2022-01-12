@@ -1,11 +1,11 @@
 import 'package:consulta_cep/controllers/controller.dart';
+import 'package:consulta_cep/models/exibition_model.dart';
+import 'package:consulta_cep/widgets/custom_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class HomePage extends StatefulWidget {
   TextEditingController textController = TextEditingController();
+  List<ExibitionModel> list = [];
   Controller controller = Controller();
   HomePage({Key? key}) : super(key: key);
 
@@ -42,7 +42,9 @@ class _HomePageState extends State<HomePage> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    widget.controller.buscaCep(widget.textController.text);
+                    setState(() {
+                      widget.controller.buscaCep(widget.textController.text);
+                    });
                   },
                   child: const Text('Buscar'),
                 ),
@@ -55,13 +57,44 @@ class _HomePageState extends State<HomePage> {
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(),
                   ),
-                  child: Column(
-                    children: [
-                      Text(
-                        widget.controller.resultado,
-                        style: TextStyle(fontSize: 17),
-                      ),
-                    ],
+                  child: FutureBuilder<List<ExibitionModel>>(
+                    initialData: widget.list,
+                    future: (widget.controller
+                        .buscaCep(widget.textController.text)),
+                    builder: (context, snapshot) {
+                      widget.list = snapshot.data as List<ExibitionModel>;
+                      return ListView.builder(
+                        padding: const EdgeInsets.all(8),
+                        itemCount: widget.list.length,
+                        itemBuilder: (_, index) {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CustomText(
+                                data: 'Cep: ${widget.list[index].cep}',
+                              ),
+                              CustomText(
+                                data:
+                                    'Cidade: ${widget.list[index].localidade}',
+                              ),
+                              CustomText(
+                                data: 'Bairoo: ${widget.list[index].bairro}',
+                              ),
+                              CustomText(
+                                data:
+                                    'Logradouro: ${widget.list[index].logradouro}',
+                              ),
+                              CustomText(
+                                data: 'Uf: ${widget.list[index].uf}',
+                              ),
+                              CustomText(
+                                data: 'DDD: ${widget.list[index].ddd}',
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
                   ),
                 ),
               ],
