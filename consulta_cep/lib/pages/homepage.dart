@@ -35,9 +35,14 @@ class _HomePageState extends State<HomePage> {
                   child: TextField(
                     keyboardType: TextInputType.number,
                     controller: widget.textController,
-                    decoration: const InputDecoration(
-                        labelText: 'CEP',
-                        hintText: 'Digite o CEP a ser consultado'),
+                    decoration: InputDecoration(
+                      labelText: 'CEP',
+                      hintText: 'Digite o CEP a ser consultado',
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () => widget.textController.clear(),
+                      ),
+                    ),
                   ),
                 ),
                 ElevatedButton(
